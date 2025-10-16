@@ -1,65 +1,126 @@
-# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application
+# CCL Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application
 
 
 
-A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.
+A lightweight real-time chat application built with ASP.NET Core 7 that uses Azure services for real-time messaging and storage. Frontend is plain HTML + Tailwind CSS (no React).
 
 
+
+## What is this project?A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.
+
+
+
+- Simple room-based chat: users create or join rooms and send messages in real time.
+
+- Features: real-time messaging, online users list, typing indicators, emoji picker, dark/light theme, and message history.
 
 ## 🎯 What is this Project?A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.
 
+## Cloud services used
 
 
-This is a **real-time chat application** that allows users to:
+
+- Azure SignalR Service — real-time messaging (WebSockets). Uses Azure SignalR connection string as `Azure__SignalR__ConnectionString`.
+
+- Azure Cosmos DB — NoSQL storage for persisting messages. Uses `Azure__CosmosDb__ConnectionString`.This is a **real-time chat application** that allows users to:
+
+- Render.com — Docker-based hosting (free tier) used to host the ASP.NET Core app at:
 
 - Create and join multiple chat rooms
+
+  https://ccl-chatapp.onrender.com
 
 - Send and receive messages instantly## 🎯 What is this Project?A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.A modern real-time chat application built with ASP.NET Core and Azure cloud services, featuring room-based conversations, real-time presence tracking, and message persistence.
 
+## Run locally
+
 - See who's online in each room
 
-- View typing indicators when others are typing
+Prerequisites:
+
+- .NET 7 SDK- View typing indicators when others are typing
+
+- Azure SignalR and Cosmos DB connection strings (or local equivalents)
 
 - Switch between dark and light themes
 
+Steps:
+
 - Use emojis in messagesThis is a **real-time chat application** that allows users to:
+
+1. Clone the repo
 
 - Access chat history (messages are saved)
 
-- Create and join multiple chat rooms
+```powershell
 
-The application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.
+git clone https://github.com/Sunil-Saini123/CCL_Chatapp.git- Create and join multiple chat rooms
 
-- Send and receive messages instantly## 🎯 What is this Project?## Azure Services Integration
+cd CCL_Chatapp
 
-## ☁️ Cloud Services Used
+```The application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.
 
-- See who's online in each room
 
-### Azure Services
 
-- View typing indicators when others are typing
+2. Create `appsettings.json` (or set environment variables) and add your Azure connection strings:- Send and receive messages instantly## 🎯 What is this Project?## Azure Services Integration
+
+
+
+```json## ☁️ Cloud Services Used
+
+{
+
+  "Azure": {- See who's online in each room
+
+    "SignalR": { "ConnectionString": "YOUR_AZURE_SIGNALR_CONNECTION_STRING" },
+
+    "CosmosDb": { "ConnectionString": "YOUR_AZURE_COSMOSDB_CONNECTION_STRING" }### Azure Services
+
+  }
+
+}- View typing indicators when others are typing
+
+```
 
 1. **Azure SignalR Service (Free Tier)**
 
+3. Run the app
+
    - Manages real-time WebSocket connections- Switch between dark and light themes
 
-   - Handles instant message delivery to all users
+```powershell
+
+dotnet run   - Handles instant message delivery to all users
+
+```
 
    - Supports up to 20 concurrent connections on free tier- Use emojis in messagesThis is a **real-time chat application** that allows users to:### 1. Azure SignalR Service
 
+4. Open http://localhost:5000 in your browser.
+
    - Provides automatic scaling and failover
+
+## Use hosted version
 
 - Access chat history (messages are saved)
 
+Open the live app at:
+
 2. **Azure Cosmos DB (NoSQL)**
+
+https://ccl-chatapp.onrender.com
 
    - Stores all chat messages persistently- Create and join multiple chat rooms- **Purpose**: Manages real-time communication infrastructure
 
+(First visit may be slow if the free Render instance is idle.)
+
    - Enables message history retrieval
+
+---
 
    - Uses room-based partitioning for efficient queriesThe application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.
 
+If you want, I can also add a short section listing environment variables to set on Render (I already prepared these names earlier). Ready to commit this?
    - Serverless pricing (pay only for what you use)
 
 - Send and receive messages instantly- **Features**:
