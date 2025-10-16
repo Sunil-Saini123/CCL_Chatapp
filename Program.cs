@@ -20,10 +20,10 @@ builder.Services.AddSingleton(serviceProvider =>
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
 
 app.MapHub<ChatHub>("/chat");
-app.MapGet("/", () => Results.File("wwwroot/index.html", "text/html"));
 
 app.Run();
