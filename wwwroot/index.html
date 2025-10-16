@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.11/signalr.min.js"></script>
+    <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'typing': 'typing 1s infinite'
+                    },
+                    keyframes: {
+                        typing: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.5 }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<body class="bg-gray-100 dark:bg-gray-900 h-screen transition-colors duration-200">
+    <div id="theme-toggle" class="fixed top-4 right-4 z-50">
+        <button onclick="toggleTheme()" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+            <svg id="sun-icon" class="w-6 h-6 hidden dark:block text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <svg id="moon-icon" class="w-6 h-6 block dark:hidden text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="login-screen" class="container mx-auto px-4 h-screen flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-6 text-center dark:text-white">Chat Rooms</h1>
+            <input type="text" id="username" placeholder="Your username" class="w-full p-2 mb-4 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold mb-2 dark:text-white">Available Rooms</h2>
+                <div id="available-rooms" class="max-h-48 overflow-y-auto border rounded p-2 mb-2 bg-gray-50 dark:bg-gray-700">
+                    <!-- Available rooms will be listed here -->
+                    <div class="text-gray-500 dark:text-gray-400 text-center py-2" id="no-rooms-message">
+                        No active rooms found
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="roomId" placeholder="Room name" class="flex-1 p-2 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                <button onclick="createRoom()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">Create Room</button>
+            </div>
+
+            <div id="selected-room" class="hidden mb-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded">
+                <p class="text-sm dark:text-white">Selected Room: <span id="selected-room-name" class="font-semibold"></span></p>
+            </div>
+
+            <button onclick="joinRoom()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors duration-200">Join Selected Room</button>
+        </div>
+    </div>
+
+    <audio id="message-sound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
+
+    <div id="chat-screen" class="container mx-auto px-4 h-screen flex flex-col py-4 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h2 class="text-xl font-bold dark:text-white">Room: <span id="room-display"></span></h2>
+                <div id="typing-indicator" class="text-sm text-gray-500 dark:text-gray-400 hidden">
+                    <span class="animate-typing">Someone is typing...</span>
+                </div>
+            </div>
+            <div class="flex gap-2 items-center">
+                <div class="relative">
+                    <button onclick="toggleUsersList()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">
+                        Online Users
+                    </button>
+                    <div id="online-users" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 z-10">
+                        <!-- Online users will be listed here -->
+                    </div>
+                </div>
+                <button onclick="leaveRoom()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200">Leave Room</button>
+            </div>
+        </div>
+        
+        <div id="messages" class="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-4 overflow-y-auto">
+            <!-- Messages will be inserted here -->
+        </div>
+
+        <div class="flex gap-2">
+            <div class="flex-1 flex gap-2 bg-white dark:bg-gray-800 rounded-lg shadow p-2">
+                <button id="emoji-button" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 px-2">
+                    😊
+                </button>
+                <input type="text" id="message" placeholder="Type your message..." 
+                    class="flex-1 p-2 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            </div>
+            <button onclick="sendMessage()" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors duration-200">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .withAutomaticReconnect([0, 1000, 5000, null]) // Retry immediately, then after 1s, 5s, and every 5s
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        let currentUsername = '';
+        let currentRoom = '';
+        let onlineUsers = new Set();
+        let typingTimeout;
+        let picker;
+        let availableRooms = new Set();
+
+        // Initialize the connection
+        async function startConnection() {
+            try {
+                await connection.start();
+                console.log("Connected to SignalR hub");
+                // Request room list immediately after connection
+                if (connection.state === "Connected") {
+                    await connection.invoke("RequestRoomList");
+                }
+            } catch (err) {
+                console.error("Error starting connection:", err);
+                setTimeout(startConnection, 5000);
+            }
+        }
+        
+        // Initialize emoji picker
+        window.addEventListener('DOMContentLoaded', () => {
+            picker = new EmojiButton({
+                position: 'top-start'
+            });
+
+            picker.on('emoji', emoji => {
+                const messageInput = document.getElementById("message");
+                messageInput.value += emoji;
+                messageInput.focus();
+            });
+
+            document.getElementById('emoji-button').addEventListener('click', () => {
+                picker.togglePicker(document.getElementById('emoji-button'));
+            });
+        });
+
+        // Theme handling
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        // Set initial theme
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        connection.on("ReceiveMessage", (username, message, timestamp) => {
+            const messagesDiv = document.getElementById("messages");
+            const messageElement = document.createElement("div");
+            messageElement.className = `mb-2 ${username === currentUsername ? 'text-right' : ''}`;
+            
+            const time = new Date(timestamp).toLocaleTimeString();
+            const formattedDate = new Date(timestamp).toLocaleDateString();
+            messageElement.innerHTML = `
+                <div class="${username === currentUsername ? 
+                    'bg-blue-100 dark:bg-blue-900 ml-auto' : 
+                    'bg-gray-100 dark:bg-gray-700'} inline-block rounded px-4 py-2 max-w-xs">
+                    <div class="font-bold text-sm dark:text-white">${username}</div>
+                    <div class="dark:text-gray-100">${message}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400" title="${formattedDate}">${time}</div>
+                </div>
+            `;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Play sound if message is from others
+            if (username !== currentUsername) {
+                document.getElementById("message-sound").play();
+            }
+        });
+
+        connection.on("UpdateUserList", (users) => {
+            onlineUsers = new Set(users);
+            updateOnlineUsersList();
+        });
+
+        connection.on("UserJoined", (username) => {
+            const messagesDiv = document.getElementById("messages");
+            const messageElement = document.createElement("div");
+            messageElement.className = "text-center text-gray-500 dark:text-gray-400 text-sm my-2";
+            messageElement.textContent = `${username} joined the room`;
+            messagesDiv.appendChild(messageElement);
+            
+            onlineUsers.add(username);
+            updateOnlineUsersList();
+        });
+
+        connection.on("UserLeft", (username) => {
+            const messagesDiv = document.getElementById("messages");
+            const messageElement = document.createElement("div");
+            messageElement.className = "text-center text-gray-500 dark:text-gray-400 text-sm my-2";
+            messageElement.textContent = `${username} left the room`;
+            messagesDiv.appendChild(messageElement);
+            
+            onlineUsers.delete(username);
+            updateOnlineUsersList();
+        });
+
+        connection.on("AvailableRooms", (rooms) => {
+            console.log("Received room list:", rooms);
+            availableRooms = new Set(rooms);
+            updateAvailableRoomsList();
+        });
+
+        // Start the connection when the page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await startConnection();
+        });
+
+        // Set up periodic room list refresh
+        async function refreshRoomList() {
+            if (connection.state === "Connected") {
+                try {
+                    await connection.invoke("RequestRoomList");
+                } catch (err) {
+                    console.error("Error refreshing room list:", err);
+                }
+            }
+        }
+
+        // Start periodic room list refresh when connection starts
+        // Set up connection state handlers
+        connection.onreconnecting(error => {
+            console.log("Reconnecting to server...", error);
+        });
+
+        connection.onreconnected(async () => {
+            console.log("Reconnected to server");
+            await refreshRoomList();
+        });
+
+        connection.onclose(async () => {
+            console.log("Connection closed");
+            // Try to restart the connection
+            try {
+                await connection.start();
+                await refreshRoomList();
+            } catch (err) {
+                console.error("Error restarting connection:", err);
+            }
+        });
+
+        // Set up periodic refresh with exponential backoff
+        let refreshInterval = 2000; // Start with 2 seconds
+        const maxInterval = 10000; // Max 10 seconds
+
+        async function scheduleRoomRefresh() {
+            try {
+                if (connection.state === "Connected") {
+                    await refreshRoomList();
+                    refreshInterval = 2000; // Reset to base interval on success
+                } else {
+                    refreshInterval = Math.min(refreshInterval * 1.5, maxInterval);
+                }
+            } catch (err) {
+                console.error("Error refreshing room list:", err);
+                refreshInterval = Math.min(refreshInterval * 1.5, maxInterval);
+            }
+            setTimeout(scheduleRoomRefresh, refreshInterval);
+        }
+
+        // Start the refresh cycle
+        scheduleRoomRefresh();
+
+        connection.on("UserTyping", (username) => {
+            if (username !== currentUsername) {
+                const typingIndicator = document.getElementById("typing-indicator");
+                typingIndicator.querySelector("span").textContent = `${username} is typing...`;
+                typingIndicator.classList.remove("hidden");
+                
+                setTimeout(() => {
+                    typingIndicator.classList.add("hidden");
+                }, 2000);
+            }
+        });
+
+        function updateAvailableRoomsList() {
+            const roomsDiv = document.getElementById("available-rooms");
+            const noRoomsMessage = document.getElementById("no-rooms-message");
+            
+            roomsDiv.innerHTML = '';
+            
+            if (availableRooms.size === 0) {
+                roomsDiv.appendChild(noRoomsMessage);
+                return;
+            }
+
+            availableRooms.forEach(room => {
+                const roomElement = document.createElement("div");
+                roomElement.className = "p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded cursor-pointer transition-colors duration-200 flex items-center";
+                roomElement.innerHTML = `
+                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    <span class="dark:text-white">${room}</span>
+                `;
+                roomElement.onclick = () => selectRoom(room);
+                roomsDiv.appendChild(roomElement);
+            });
+        }
+
+        function selectRoom(roomId) {
+            document.getElementById("roomId").value = roomId;
+            document.getElementById("selected-room").classList.remove("hidden");
+            document.getElementById("selected-room-name").textContent = roomId;
+        }
+
+        async function ensureConnected() {
+            if (connection.state === "Disconnected") {
+                try {
+                    await connection.start();
+                } catch (err) {
+                    console.error("Failed to connect:", err);
+                    throw err;
+                }
+            }
+        }
+
+        async function createRoom() {
+            const username = document.getElementById("username").value.trim();
+            const roomId = document.getElementById("roomId").value.trim();
+
+            if (!username || !roomId) {
+                alert("Please enter both username and room name");
+                return;
+            }
+
+            try {
+                if (connection.state !== "Connected") {
+                    await startConnection();
+                }
+                
+                console.log("Creating room:", roomId);
+                await connection.invoke("CreateRoom", roomId);
+                console.log("Room created, joining...");
+                await joinRoom();
+            } catch (err) {
+                console.error("Error creating room:", err);
+                alert("Failed to create room: " + err.message);
+            }
+        }
+
+        async function joinRoom() {
+            const username = document.getElementById("username").value.trim();
+            const roomId = document.getElementById("roomId").value.trim();
+
+            if (!username || !roomId) {
+                alert("Please enter both username and room name");
+                return;
+            }
+
+            try {
+                await ensureConnected();
+                await connection.invoke("JoinRoom", roomId, username);
+                
+                currentUsername = username;
+                currentRoom = roomId;
+                
+                document.getElementById("login-screen").classList.add("hidden");
+                document.getElementById("chat-screen").classList.remove("hidden");
+                document.getElementById("room-display").textContent = roomId;
+                
+                document.getElementById("message").focus();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to join the room");
+            }
+        }
+
+        async function leaveRoom() {
+            try {
+                if (connection.state === "Connected") {
+                    await connection.invoke("LeaveRoom", currentRoom, currentUsername);
+                    await connection.stop();
+                }
+                
+                document.getElementById("login-screen").classList.remove("hidden");
+                document.getElementById("chat-screen").classList.add("hidden");
+                document.getElementById("messages").innerHTML = "";
+                
+                currentUsername = '';
+                currentRoom = '';
+            } catch (err) {
+                console.error(err);
+                alert("Error leaving room: " + err.message);
+            }
+        }
+
+        function updateOnlineUsersList() {
+            const usersList = document.getElementById("online-users");
+            usersList.innerHTML = '';
+            
+            onlineUsers.forEach(user => {
+                const userElement = document.createElement("div");
+                userElement.className = "p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded";
+                userElement.innerHTML = `
+                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    <span class="dark:text-white">${user}</span>
+                    ${user === currentUsername ? ' (you)' : ''}
+                `;
+                usersList.appendChild(userElement);
+            });
+        }
+
+        function toggleUsersList() {
+            const usersList = document.getElementById("online-users");
+            usersList.classList.toggle("hidden");
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById("message");
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                try {
+                    await connection.invoke("SendMessage", currentRoom, currentUsername, message);
+                    messageInput.value = "";
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to send message");
+                }
+            }
+        }
+
+        // Handle typing indicator
+        function handleTyping() {
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+            
+            connection.invoke("UserTyping", currentRoom, currentUsername).catch(err => {
+                console.error(err);
+            });
+            
+            typingTimeout = setTimeout(() => {
+                typingTimeout = null;
+            }, 1000);
+        }
+
+        // Handle Enter key in message input
+        document.getElementById("message").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        // Handle typing indicator
+        document.getElementById("message").addEventListener("input", handleTyping);
+
+        // Handle Enter key in login form
+        document.getElementById("username").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                document.getElementById("roomId").focus();
+            }
+        });
+
+        document.getElementById("roomId").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                joinRoom();
+            }
+        });
+
+        // Close online users list when clicking outside
+        document.addEventListener("click", (e) => {
+            const onlineUsers = document.getElementById("online-users");
+            const toggleButton = e.target.closest("button");
+            
+            if (!onlineUsers.contains(e.target) && !toggleButton) {
+                onlineUsers.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+</html>
