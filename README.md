@@ -1,4 +1,4 @@
-# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application
+# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application# Real-Time Chat Application
 
 
 
@@ -6,7 +6,7 @@ A modern real-time chat application built with ASP.NET Core, featuring room-base
 
 
 
-## 🎯 What is this Project?A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.A modern real-time chat application built with ASP.NET Core and Azure cloud services, featuring room-based conversations, real-time presence tracking, and message persistence.
+## 🎯 What is this Project?A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.
 
 
 
@@ -14,7 +14,7 @@ This is a **real-time chat application** that allows users to:
 
 - Create and join multiple chat rooms
 
-- Send and receive messages instantly## 🎯 What is this Project?## Azure Services Integration
+- Send and receive messages instantly## 🎯 What is this Project?A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.A modern real-time chat application built with ASP.NET Core and Azure cloud services, featuring room-based conversations, real-time presence tracking, and message persistence.
 
 - See who's online in each room
 
@@ -22,55 +22,55 @@ This is a **real-time chat application** that allows users to:
 
 - Switch between dark and light themes
 
-- Use emojis in messagesThis is a **real-time chat application** that allows users to:### 1. Azure SignalR Service
+- Use emojis in messagesThis is a **real-time chat application** that allows users to:
 
 - Access chat history (messages are saved)
 
-- Create and join multiple chat rooms- **Purpose**: Manages real-time communication infrastructure
+- Create and join multiple chat rooms
 
 The application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.
 
-- Send and receive messages instantly- **Features**:
+- Send and receive messages instantly## 🎯 What is this Project?## Azure Services Integration
 
 ## ☁️ Cloud Services Used
 
-- See who's online in each room  - Handles WebSocket connections at scale
+- See who's online in each room
 
 ### Azure Services
 
-- View typing indicators when others are typing  - Manages client connection state
+- View typing indicators when others are typing
 
 1. **Azure SignalR Service (Free Tier)**
 
-   - Manages real-time WebSocket connections- Switch between dark and light themes  - Provides automatic failover and recovery
+   - Manages real-time WebSocket connections- Switch between dark and light themes
 
    - Handles instant message delivery to all users
 
-   - Supports up to 20 concurrent connections on free tier- Use emojis in messages  - Enables real-time message broadcasting
+   - Supports up to 20 concurrent connections on free tier- Use emojis in messagesThis is a **real-time chat application** that allows users to:### 1. Azure SignalR Service
 
    - Provides automatic scaling and failover
 
-- Access chat history (messages are saved)- **Implementation**:
+- Access chat history (messages are saved)
 
 2. **Azure Cosmos DB (NoSQL)**
 
-   - Stores all chat messages persistently  - Used for room management
+   - Stores all chat messages persistently- Create and join multiple chat rooms- **Purpose**: Manages real-time communication infrastructure
 
    - Enables message history retrieval
 
-   - Uses room-based partitioning for efficient queriesThe application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.  - Handles user presence tracking
+   - Uses room-based partitioning for efficient queriesThe application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.
 
    - Serverless pricing (pay only for what you use)
 
-  - Manages typing indicators
+- Send and receive messages instantly- **Features**:
 
 ### Hosting Service
 
-## ☁️ Cloud Services Used  - Delivers instant messages
+## ☁️ Cloud Services Used
 
 3. **Render.com (Free Tier)**
 
-   - Hosts the ASP.NET Core web application  - Provides connection resilience
+   - Hosts the ASP.NET Core web application- See who's online in each room  - Handles WebSocket connections at scale
 
    - Provides automatic deployments from GitHub
 
@@ -78,45 +78,164 @@ The application provides a modern, responsive user interface built with HTML and
 
    - Docker-based containerization
 
-   - **Note:** Free tier spins down after 15 minutes of inactivity (takes ~30 seconds to wake up)1. **Azure SignalR Service (Free Tier)**- **Purpose**: Provides scalable message persistence
+   - **Note:** Free tier spins down after 15 minutes of inactivity (takes ~30 seconds to wake up)- View typing indicators when others are typing  - Manages client connection state
 
 
 
-## 🚀 How to Run   - Manages real-time WebSocket connections- **Features**:
+## 🚀 How to Run1. **Azure SignalR Service (Free Tier)**
 
 
 
-### Option 1: Access the Hosted Version   - Handles instant message delivery to all users  - Stores chat messages with room-based partitioning
+### Option 1: Access the Hosted Version   - Manages real-time WebSocket connections- Switch between dark and light themes  - Provides automatic failover and recovery
 
 
 
-Simply visit the live application:   - Supports up to 20 concurrent connections on free tier  - Enables message history retrieval
+Simply visit the live application:   - Handles instant message delivery to all users
 
 
 
-**🔗 [https://ccl-chatapp.onrender.com](https://ccl-chatapp.onrender.com)**   - Provides automatic scaling and failover  - Provides automatic indexing
+**🔗 [https://ccl-chatapp.onrender.com](https://ccl-chatapp.onrender.com)**   - Supports up to 20 concurrent connections on free tier- Use emojis in messages  - Enables real-time message broadcasting
 
 
 
-1. Enter your username  - Offers multi-region support
+1. Enter your username   - Provides automatic scaling and failover
 
 2. Create a new room or join an existing one
 
-3. Start chatting!2. **Azure Cosmos DB (NoSQL)**- **Implementation**:
+3. Start chatting!- Access chat history (messages are saved)- **Implementation**:
 
 
 
-> ⚠️ **Note:** First load may take 30-60 seconds if the service was idle (free tier limitation)   - Stores all chat messages persistently  - Messages stored by room (partition key)
+> ⚠️ **Note:** First load may take 30-60 seconds if the service was idle (free tier limitation)2. **Azure Cosmos DB (NoSQL)**
 
 
+
+### Option 2: Run Locally   - Stores all chat messages persistently  - Used for room management
+
+
+
+#### Prerequisites   - Enables message history retrieval
+
+- [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0) or later
+
+- Azure SignalR Service and Cosmos DB connection strings (or create your own free tier resources)   - Uses room-based partitioning for efficient queriesThe application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.  - Handles user presence tracking
+
+
+
+#### Steps   - Serverless pricing (pay only for what you use)
+
+
+
+1. **Clone the repository**  - Manages typing indicators
+
+   ```bash
+
+   git clone https://github.com/Sunil-Saini123/CCL_Chatapp.git### Hosting Service
+
+   cd CCL_Chatapp
+
+   ```## ☁️ Cloud Services Used  - Delivers instant messages
+
+
+
+2. **Configure Azure connection strings**3. **Render.com (Free Tier)**
+
+   
+
+   Create or update `appsettings.json`:   - Hosts the ASP.NET Core web application  - Provides connection resilience
+
+   ```json
+
+   {   - Provides automatic deployments from GitHub
+
+     "Azure": {
+
+       "SignalR": {   - Includes free SSL certificates### Azure Services
+
+         "ConnectionString": "YOUR_AZURE_SIGNALR_CONNECTION_STRING"
+
+       },   - Docker-based containerization
+
+       "CosmosDb": {
+
+         "ConnectionString": "YOUR_AZURE_COSMOSDB_CONNECTION_STRING"   - **Note:** Free tier spins down after 15 minutes of inactivity (takes ~30 seconds to wake up)1. **Azure SignalR Service (Free Tier)**- **Purpose**: Provides scalable message persistence
+
+       }
+
+     }
+
+   }
+
+   ```## 🚀 How to Run   - Manages real-time WebSocket connections- **Features**:
+
+
+
+3. **Run the application**
+
+   ```bash
+
+   dotnet run### Option 1: Access the Hosted Version   - Handles instant message delivery to all users  - Stores chat messages with room-based partitioning
+
+   ```
+
+
+
+4. **Open in browser**
+
+   Simply visit the live application:   - Supports up to 20 concurrent connections on free tier  - Enables message history retrieval
+
+   Navigate to: `http://localhost:5000`
+
+
+
+That's it! The application is now running locally and connected to Azure cloud services.
+
+**🔗 [https://ccl-chatapp.onrender.com](https://ccl-chatapp.onrender.com)**   - Provides automatic scaling and failover  - Provides automatic indexing
+
+---
+
+
+
+## 📝 Features
+
+1. Enter your username  - Offers multi-region support
+
+- ✅ Real-time messaging with SignalR
+
+- ✅ Multiple chat rooms2. Create a new room or join an existing one
+
+- ✅ User presence tracking
+
+- ✅ Typing indicators3. Start chatting!2. **Azure Cosmos DB (NoSQL)**- **Implementation**:
+
+- ✅ Message persistence
+
+- ✅ Dark/Light theme toggle
+
+- ✅ Emoji picker
+
+- ✅ Responsive design> ⚠️ **Note:** First load may take 30-60 seconds if the service was idle (free tier limitation)   - Stores all chat messages persistently  - Messages stored by room (partition key)
+
+- ✅ Room management (create/join/leave)
+
+
+
+## 🛠️ Tech Stack
 
 ### Option 2: Run Locally   - Enables message history retrieval  - Maintains chat history
 
+- **Frontend:** HTML, JavaScript, Tailwind CSS
 
+- **Backend:** ASP.NET Core 7.0, C#
 
-#### Prerequisites   - Uses room-based partitioning for efficient queries  - Enables message querying
+- **Real-time Communication:** Azure SignalR Service
 
-- [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0) or later
+- **Database:** Azure Cosmos DB (NoSQL)#### Prerequisites   - Uses room-based partitioning for efficient queries  - Enables message querying
+
+- **Hosting:** Render.com (Docker)
+
+- **Version Control:** GitHub- [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0) or later
+
 
 - Azure SignalR Service and Cosmos DB connection strings (or create your own free tier resources)   - Serverless pricing (pay only for what you use)  - Supports offline message access
 
