@@ -1,121 +1,240 @@
-# Real-Time Chat Application
+# Real-Time Chat Application# Real-Time Chat Application
 
-A modern real-time chat application built with ASP.NET Core and Azure cloud services, featuring room-based conversations, real-time presence tracking, and message persistence.
 
-## Azure Services Integration
 
-### 1. Azure SignalR Service
-- **Purpose**: Manages real-time communication infrastructure
-- **Features**:
-  - Handles WebSocket connections at scale
-  - Manages client connection state
-  - Provides automatic failover and recovery
-  - Enables real-time message broadcasting
-- **Implementation**:
+A modern real-time chat application built with ASP.NET Core, featuring room-based conversations, real-time messaging, user presence tracking, and persistent message storage using cloud services.A modern real-time chat application built with ASP.NET Core and Azure cloud services, featuring room-based conversations, real-time presence tracking, and message persistence.
+
+
+
+## 🎯 What is this Project?## Azure Services Integration
+
+
+
+This is a **real-time chat application** that allows users to:### 1. Azure SignalR Service
+
+- Create and join multiple chat rooms- **Purpose**: Manages real-time communication infrastructure
+
+- Send and receive messages instantly- **Features**:
+
+- See who's online in each room  - Handles WebSocket connections at scale
+
+- View typing indicators when others are typing  - Manages client connection state
+
+- Switch between dark and light themes  - Provides automatic failover and recovery
+
+- Use emojis in messages  - Enables real-time message broadcasting
+
+- Access chat history (messages are saved)- **Implementation**:
+
   - Used for room management
-  - Handles user presence tracking
+
+The application provides a modern, responsive user interface built with HTML and Tailwind CSS, and leverages enterprise-grade cloud services for scalability and reliability.  - Handles user presence tracking
+
   - Manages typing indicators
-  - Delivers instant messages
+
+## ☁️ Cloud Services Used  - Delivers instant messages
+
   - Provides connection resilience
 
-### 2. Azure Cosmos DB
-- **Purpose**: Provides scalable message persistence
-- **Features**:
-  - Stores chat messages with room-based partitioning
-  - Enables message history retrieval
-  - Provides automatic indexing
-  - Offers multi-region support
-- **Implementation**:
-  - Messages stored by room (partition key)
-  - Maintains chat history
-  - Enables message querying
-  - Supports offline message access
+### Azure Services
 
-### 3. Azure Key Vault (Production)
+### 2. Azure Cosmos DB
+
+1. **Azure SignalR Service (Free Tier)**- **Purpose**: Provides scalable message persistence
+
+   - Manages real-time WebSocket connections- **Features**:
+
+   - Handles instant message delivery to all users  - Stores chat messages with room-based partitioning
+
+   - Supports up to 20 concurrent connections on free tier  - Enables message history retrieval
+
+   - Provides automatic scaling and failover  - Provides automatic indexing
+
+  - Offers multi-region support
+
+2. **Azure Cosmos DB (NoSQL)**- **Implementation**:
+
+   - Stores all chat messages persistently  - Messages stored by room (partition key)
+
+   - Enables message history retrieval  - Maintains chat history
+
+   - Uses room-based partitioning for efficient queries  - Enables message querying
+
+   - Serverless pricing (pay only for what you use)  - Supports offline message access
+
+
+
+### Hosting Service### 3. Azure Key Vault (Production)
+
 - **Purpose**: Secures application configuration
-- **Features**:
-  - Manages service connection strings
-  - Stores application secrets
-  - Provides identity-based access
-- **Implementation**:
-  - Secures SignalR connection string
+
+3. **Render.com (Free Tier)**- **Features**:
+
+   - Hosts the ASP.NET Core web application  - Manages service connection strings
+
+   - Provides automatic deployments from GitHub  - Stores application secrets
+
+   - Includes free SSL certificates  - Provides identity-based access
+
+   - Docker-based containerization- **Implementation**:
+
+   - **Note:** Free tier spins down after 15 minutes of inactivity (takes ~30 seconds to wake up)  - Secures SignalR connection string
+
   - Protects Cosmos DB credentials
-  - Manages service principals
+
+## 🚀 How to Run  - Manages service principals
+
   - Controls secret access
+
+### Option 1: Access the Hosted Version
 
 ## Core Features
 
+Simply visit the live application:
+
 - Real-time messaging with SignalR Service
-- Persistent storage with Cosmos DB
+
+**🔗 [https://ccl-chatapp.onrender.com](https://ccl-chatapp.onrender.com)**- Persistent storage with Cosmos DB
+
 - Multiple chat rooms with real-time updates
-- User presence and typing indicators
-- Join/leave notifications
-- Responsive Tailwind CSS design
+
+1. Enter your username- User presence and typing indicators
+
+2. Create a new room or join an existing one- Join/leave notifications
+
+3. Start chatting!- Responsive Tailwind CSS design
+
 - Dark/Light theme support
-- Emoji picker integration
 
-## Prerequisites
+> ⚠️ **Note:** First load may take 30-60 seconds if the service was idle (free tier limitation)- Emoji picker integration
 
-1. Azure Account with the following services:
-   - Azure SignalR Service
-   - Azure Cosmos DB
 
-2. .NET 7.0 SDK or later
 
-## Configuration
+### Option 2: Run Locally## Prerequisites
 
-1. Update `appsettings.json` with your Azure service connection strings:
 
-```json
+
+#### Prerequisites1. Azure Account with the following services:
+
+- [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0) or later   - Azure SignalR Service
+
+- Azure SignalR Service and Cosmos DB connection strings (or create your own free tier resources)   - Azure Cosmos DB
+
+
+
+#### Steps2. .NET 7.0 SDK or later
+
+
+
+1. **Clone the repository**## Configuration
+
+   ```bash
+
+   git clone https://github.com/Sunil-Saini123/CCL_Chatapp.git1. Update `appsettings.json` with your Azure service connection strings:
+
+   cd CCL_Chatapp
+
+   ``````json
+
 {
-  "Azure": {
-    "SignalR": {
-      "ConnectionString": "YOUR_SIGNALR_CONNECTION_STRING"
-    },
-    "CosmosDb": {
-      "ConnectionString": "YOUR_COSMOSDB_CONNECTION_STRING"
-    }
-  }
-}
-```
 
-## Running the Application
+2. **Configure Azure connection strings**  "Azure": {
 
-1. Clone the repository
-2. Update the connection strings in `appsettings.json`
+       "SignalR": {
+
+   Create or update `appsettings.json`:      "ConnectionString": "YOUR_SIGNALR_CONNECTION_STRING"
+
+   ```json    },
+
+   {    "CosmosDb": {
+
+     "Azure": {      "ConnectionString": "YOUR_COSMOSDB_CONNECTION_STRING"
+
+       "SignalR": {    }
+
+         "ConnectionString": "YOUR_AZURE_SIGNALR_CONNECTION_STRING"  }
+
+       },}
+
+       "CosmosDb": {```
+
+         "ConnectionString": "YOUR_AZURE_COSMOSDB_CONNECTION_STRING"
+
+       }## Running the Application
+
+     }
+
+   }1. Clone the repository
+
+   ```2. Update the connection strings in `appsettings.json`
+
 3. Run the application:
-   ```
-   dotnet run
-   ```
-4. Open your browser and navigate to `http://localhost:5000`
 
-## Usage
+3. **Run the application**   ```
 
-1. Enter your username and a room ID
+   ```bash   dotnet run
+
+   dotnet run   ```
+
+   ```4. Open your browser and navigate to `http://localhost:5000`
+
+
+
+4. **Open in browser**## Usage
+
+   
+
+   Navigate to: `http://localhost:5000`1. Enter your username and a room ID
+
 2. Click "Join Room" to enter the chat
-3. Send messages using the input field at the bottom
+
+That's it! The application is now running locally and connected to Azure cloud services.3. Send messages using the input field at the bottom
+
 4. Click "Leave Room" to exit
+
+---
 
 ## Architecture
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Browser   │◄────┤ Azure       │◄────┤   ASP.NET   │
-│   Client    │     │ SignalR     │     │   Core App  │
-└─────────────┘     └─────────────┘     └──────┬──────┘
-                                               │
-                    ┌─────────────┐     ┌──────┴──────┐
-                    │    Key      │◄────┤    Azure    │
-                    │   Vault     │     │  Cosmos DB  │
-                    └─────────────┘     └─────────────┘
+### 📝 Features
+
 ```
 
+- ✅ Real-time messaging with SignalR┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+
+- ✅ Multiple chat rooms│   Browser   │◄────┤ Azure       │◄────┤   ASP.NET   │
+
+- ✅ User presence tracking│   Client    │     │ SignalR     │     │   Core App  │
+
+- ✅ Typing indicators└─────────────┘     └─────────────┘     └──────┬──────┘
+
+- ✅ Message persistence                                               │
+
+- ✅ Dark/Light theme toggle                    ┌─────────────┐     ┌──────┴──────┐
+
+- ✅ Emoji picker                    │    Key      │◄────┤    Azure    │
+
+- ✅ Responsive design                    │   Vault     │     │  Cosmos DB  │
+
+- ✅ Room management (create/join/leave)                    └─────────────┘     └─────────────┘
+
+```
+
+### 🛠️ Tech Stack
+
 ### Components
-- **Frontend**: HTML, JavaScript, Tailwind CSS
-- **Backend**: ASP.NET Core 7.0
-- **Real-time Communication**: Azure SignalR Service
-- **Data Storage**: Azure Cosmos DB
-- **Security**: Azure Key Vault (Production)
+
+- **Frontend:** HTML, JavaScript, Tailwind CSS- **Frontend**: HTML, JavaScript, Tailwind CSS
+
+- **Backend:** ASP.NET Core 7.0, C#- **Backend**: ASP.NET Core 7.0
+
+- **Real-time Communication:** Azure SignalR Service- **Real-time Communication**: Azure SignalR Service
+
+- **Database:** Azure Cosmos DB (NoSQL)- **Data Storage**: Azure Cosmos DB
+
+- **Hosting:** Render.com (Docker)- **Security**: Azure Key Vault (Production)
+
+- **Version Control:** GitHub
 
 ### Data Flow
 1. Client connects via WebSocket through Azure SignalR Service
